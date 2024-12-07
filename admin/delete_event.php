@@ -1,18 +1,19 @@
 <?php
 include '../config/db.php';
 
-if (isset($_GET['id'])) {
-    $event_id = $_GET['id'];
+// Vérifier si l'ID de l'événement est fourni
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
+    $event_id = $_POST['event_id'];
 
-    // Supprimer l'événement
+    // Supprimer l'événement de la base de données
     $stmt = $pdo->prepare("DELETE FROM events WHERE id = ?");
     if ($stmt->execute([$event_id])) {
-        header('Location: manage_events.php');
-        exit;
+        header("Location: manage_events.php");
+        exit();
     } else {
         echo "Erreur lors de la suppression de l'événement.";
     }
 } else {
-    die("ID de l'événement non fourni.");
+    echo "ID de l'événement non fourni.";
 }
 ?>
