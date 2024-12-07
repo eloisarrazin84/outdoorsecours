@@ -74,7 +74,7 @@ foreach ($events as $event) {
     $(document).ready(function () {
         $("#calendar").evoCalendar({
             language: 'en',
-            theme: "Orange Coral", // Design personnalisé
+            theme: "Midnight Blue", // Design personnalisé
             todayHighlight: true,
             sidebarDisplayDefault: true,
             sidebarToggler: true,
@@ -83,10 +83,9 @@ foreach ($events as $event) {
             calendarEvents: <?= json_encode($eventsJson) ?>, // Ajouter les événements
         });
 
-        // Gérer l'événement lors du clic sur une date
-        $("#calendar").on('selectDate', function (event, activeDate) {
-            alert("Selected date: " + activeDate);
-        });
+        // Désactivation de l'alert au clic sur une date
+        $("#calendar").off('selectDate'); // Retirer l'événement de sélection de date
+
     });
 </script>
 </body>
