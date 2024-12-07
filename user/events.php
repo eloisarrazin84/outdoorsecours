@@ -73,7 +73,7 @@ foreach ($events as $event) {
 
         // Initialisation d'Evo Calendar avec la langue et les événements
         $("#calendar").evoCalendar({
-            language: 'fr',
+            language: 'en',
             theme: "Midnight Blue", // Thème du calendrier
             todayHighlight: true, // Surligner la date d'aujourd'hui
             calendarEvents: <?= json_encode($eventsJson) ?>, // Charger les événements depuis PHP
