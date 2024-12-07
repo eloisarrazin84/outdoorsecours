@@ -1,6 +1,21 @@
 <?php
 include '../config/db.php';
 
+// Gestion du formulaire de création d'un événement
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_event'])) {
+    $name = $_POST['event_name'];
+    $date = $_POST['event_date'];
+
+    // Insertion dans la base de données
+    $stmt = $pdo->prepare("INSERT INTO events (name, date) VALUES (?, ?)");
+    if ($stmt->execute([$name, $date])) {
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    } else {
+        echo "Erreur lors de la création de l'événement.";
+    }
+}
+
 // Récupérer tous les événements
 $stmt = $pdo->prepare("SELECT * FROM events ORDER BY date ASC");
 $stmt->execute();
@@ -28,6 +43,10 @@ $events = $stmt->fetchAll();
             background-color: #007bff;
             border: none;
         }
+        .btn-warning, .btn-warning:hover {
+            background-color: #ffc107;
+            border: none;
+        }
         .btn-danger, .btn-danger:hover {
             background-color: #dc3545;
             border: none;
@@ -45,13 +64,15 @@ $events = $stmt->fetchAll();
             <form method="POST">
                 <div class="mb-3">
                     <label for="event_name" class="form-label">Nom de l'événement</label>
-                    <input type="text" class="form-control" id="event_name" name="event_name" required>
+                    <input type="text" class="form-control" id="event_name" name="event_name" placeholder="Nom de l'événement" required>
                 </div>
                 <div class="mb-3">
                     <label for="event_date" class="form-label">Date</label>
                     <input type="date" class="form-control" id="event_date" name="event_date" required>
                 </div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Créer</button>
+                <button type="submit" name="create_event" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Créer
+                </button>
             </form>
         </div>
     </div>
@@ -69,27 +90,41 @@ $events = $stmt->fetchAll();
                             <th>ID</th>
                             <th>Nom</th>
                             <th>Date</th>
-                            <th>Actions</th>
+                            <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Exemple d'événements -->
-                        <tr>
-                            <td>1</td>
-                            <td>Événement 1</td>
-                            <td>2024-12-20</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Modifier</button>
-                                <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Supprimer</button>
-                            </td>
-                        </tr>
+                        <?php if (!empty($events)): ?>
+                            <?php foreach ($events as $event): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($event['id']) ?></td>
+                                    <td><?= htmlspecialchars($event['name']) ?></td>
+                                    <td><?= htmlspecialchars($event['date']) ?></td>
+                                    <td class="text-center">
+                                        <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </a>
+                                        <form method="POST" action="delete_event.php" class="d-inline">
+                                            <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous vraiment supprimer cet événement ?');">
+                                                <i class="fas fa-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="text-center">Aucun événement trouvé.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
