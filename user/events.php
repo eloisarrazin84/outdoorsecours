@@ -124,43 +124,86 @@ $events = $stmt->fetchAll();
 
 <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 <script>
+    <script>
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
         
+        // Créer une instance de TUI Calendar
         const calendar = new tui.Calendar(calendarEl, {
             defaultView: 'month',
             taskView: true,
             scheduleView: ['time'],
             useCreationPopup: true,
             useDetailPopup: true,
+            month: {
+                startDayOfWeek: 1, // Début de la semaine (1 = Lundi)
+            },
+            // En-tête avec boutons de navigation
+            template: {
+                monthDayname: function (dayname) {
+                    return `<span class="calendar-dayname">${dayname.label}</span>`;
+                },
+            },
+            theme: {
+                'common.border': '1px solid #dddddd',
+                'month.dayname.height': '42px',
+                'month.dayname.borderLeft': 'none',
+                'month.dayname.borderBottom': '1px solid #e5e5e5',
+                'month.dayname.paddingLeft': '10px',
+                'month.dayname.fontSize': '14px',
+                'month.dayname.backgroundColor': 'inherit',
+            },
         });
 
-        // Ajouter les événements au calendrier
+        // Ajouter des événements au calendrier
         const events = [
             <?php foreach ($events as $event): ?>
             {
                 id: '<?= $event['id'] ?>',
                 title: '<?= addslashes($event['name']) ?>',
-                start: '<?= $event['date'] ?>',
-                end: '<?= $event['date'] ?>',
+                start: '<?= $event['date'] ?>T09:00:00', // Exemple d'heure
+                end: '<?= $event['date'] ?>T12:00:00', // Exemple d'heure
+                category: 'time',
                 location: '<?= addslashes($event['location']) ?>',
-                isAllday: true,
             },
             <?php endforeach; ?>
         ];
         calendar.createEvents(events);
 
-        // Basculer entre vue liste et vue calendrier
-        document.getElementById('listViewBtn').addEventListener('click', function () {
-            document.getElementById('listView').style.display = 'block';
-            document.getElementById('calendarView').style.display = 'none';
+        // Barre d'outils pour navigation
+        const prevButton = document.createElement('button');
+        prevButton.innerHTML = 'Précédent';
+        prevButton.className = 'btn btn-secondary mx-2';
+        prevButton.addEventListener('click', function () {
+            calendar.prev();
         });
 
-        document.getElementById('calendarViewBtn').addEventListener('click', function () {
-            document.getElementById('listView').style.display = 'none';
-            document.getElementById('calendarView').style.display = 'block';
+        const nextButton = document.createElement('button');
+        nextButton.innerHTML = 'Suivant';
+        nextButton.className = 'btn btn-secondary mx-2';
+        nextButton.addEventListener('click', function () {
+            calendar.next();
         });
+
+        const todayButton = document.createElement('button');
+        todayButton.innerHTML = "Aujourd'hui";
+        todayButton.className = 'btn btn-primary mx-2';
+        todayButton.addEventListener('click', function () {
+            calendar.today();
+        });
+
+        // Ajouter les boutons dans la page
+        const calendarControls = document.createElement('div');
+        calendarControls.className = 'text-center mb-3';
+        calendarControls.appendChild(prevButton);
+        calendarControls.appendChild(todayButton);
+        calendarControls.appendChild(nextButton);
+
+        // Insérer les contrôles avant le calendrier
+        calendarEl.parentNode.insertBefore(calendarControls, calendarEl);
     });
+</script>
+
 </script>
 </body>
 </html>
