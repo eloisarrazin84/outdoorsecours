@@ -52,7 +52,7 @@ $events = $stmt->fetchAll();
     <title>Événements</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css">
-    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.ie11.min.js"></script>
+    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -70,6 +70,10 @@ $events = $stmt->fetchAll();
         }
         #listView, #calendarView {
             margin-top: 20px;
+        }
+        #calendarControls {
+            margin-bottom: 20px;
+            text-align: center;
         }
     </style>
 </head>
@@ -119,19 +123,17 @@ $events = $stmt->fetchAll();
     <!-- Vue Calendrier -->
     <div id="calendarView" style="display: none;">
         <h1 class="text-center mb-4"><i class="fas fa-calendar-alt"></i> Vue Calendrier</h1>
+        <div id="calendarControls">
+            <button id="prevBtn" class="btn btn-secondary">Précédent</button>
+            <button id="todayBtn" class="btn btn-primary">Aujourd'hui</button>
+            <button id="nextBtn" class="btn btn-secondary">Suivant</button>
+        </div>
         <div id="calendar" style="height: 600px;"></div>
     </div>
 </div>
-    <script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
-
-        // Fonction pour formater l'heure
-        function formatTime(time) {
-            const hours = `${time.getHours()}`.padStart(2, '0');
-            const minutes = `${time.getMinutes()}`.padStart(2, '0');
-            return `${hours}:${minutes}`;
-        }
 
         // Créer une instance de TUI Calendar
         const calendar = new tui.Calendar(calendarEl, {
@@ -141,32 +143,12 @@ $events = $stmt->fetchAll();
             useCreationPopup: true,
             useDetailPopup: true,
             month: {
-                startDayOfWeek: 1, // Début de la semaine (1 = Lundi)
-            },
-            template: {
-                // Template pour les événements avec horaire
-                time(event) {
-                    const { start, end, title } = event;
-                    return `<span style="color: white;">${formatTime(start)}~${formatTime(end)} ${title}</span>`;
-                },
-                // Template pour les événements toute la journée
-                allday(event) {
-                    return `<span style="color: gray;">${event.title}</span>`;
-                },
+                startDayOfWeek: 1,
             },
             theme: {
                 'common.border': '1px solid #dddddd',
                 'month.dayname.height': '42px',
-                'month.dayname.borderLeft': 'none',
-                'month.dayname.borderBottom': '1px solid #e5e5e5',
-                'month.dayname.paddingLeft': '10px',
-                'month.dayname.fontSize': '14px',
-                'month.dayname.backgroundColor': 'inherit',
-                'month.schedule.height': '18px',
                 'month.schedule.borderRadius': '2px',
-                'month.schedule.marginTop': '2px',
-                'month.schedule.marginLeft': '10px',
-                'month.schedule.marginRight': '10px',
             },
         });
 
@@ -176,54 +158,30 @@ $events = $stmt->fetchAll();
             {
                 id: '<?= $event['id'] ?>',
                 title: '<?= addslashes($event['name']) ?>',
-                start: '<?= $event['date'] ?>T09:00:00', // Exemple d'heure
-                end: '<?= $event['date'] ?>T12:00:00', // Exemple d'heure
+                start: '<?= $event['date'] ?>T09:00:00',
+                end: '<?= $event['date'] ?>T12:00:00',
                 category: 'time',
-                location: '<?= addslashes($event['location']) ?>',
             },
             <?php endforeach; ?>
         ];
         calendar.createEvents(events);
 
-        // Gérer les événements de clic sur les événements du calendrier
-        calendar.on('clickEvent', function ({ event }) {
-            alert(`Titre : ${event.title}\nLieu : ${event.location}`);
+        // Boutons de navigation du calendrier
+        document.getElementById('prevBtn').addEventListener('click', () => calendar.prev());
+        document.getElementById('todayBtn').addEventListener('click', () => calendar.today());
+        document.getElementById('nextBtn').addEventListener('click', () => calendar.next());
+
+        // Basculer entre les vues
+        document.getElementById('listViewBtn').addEventListener('click', () => {
+            document.getElementById('listView').style.display = 'block';
+            document.getElementById('calendarView').style.display = 'none';
         });
 
-        // Ajouter des boutons de navigation
-        const prevButton = document.createElement('button');
-        prevButton.innerHTML = 'Précédent';
-        prevButton.className = 'btn btn-secondary mx-2';
-        prevButton.addEventListener('click', function () {
-            calendar.prev();
+        document.getElementById('calendarViewBtn').addEventListener('click', () => {
+            document.getElementById('listView').style.display = 'none';
+            document.getElementById('calendarView').style.display = 'block';
         });
-
-        const nextButton = document.createElement('button');
-        nextButton.innerHTML = 'Suivant';
-        nextButton.className = 'btn btn-secondary mx-2';
-        nextButton.addEventListener('click', function () {
-            calendar.next();
-        });
-
-        const todayButton = document.createElement('button');
-        todayButton.innerHTML = "Aujourd'hui";
-        todayButton.className = 'btn btn-primary mx-2';
-        todayButton.addEventListener('click', function () {
-            calendar.today();
-        });
-
-        // Ajouter les boutons dans la page
-        const calendarControls = document.createElement('div');
-        calendarControls.className = 'text-center mb-3';
-        calendarControls.appendChild(prevButton);
-        calendarControls.appendChild(todayButton);
-        calendarControls.appendChild(nextButton);
-
-        // Insérer les contrôles avant le calendrier
-        calendarEl.parentNode.insertBefore(calendarControls, calendarEl);
     });
-</script>
-
 </script>
 </body>
 </html>
