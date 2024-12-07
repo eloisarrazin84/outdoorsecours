@@ -8,15 +8,27 @@ $events = $stmt->fetchAll();
 
 // Gestion de l'inscription
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $event_id = $_POST['event_id'];
-    $user_id = 1; // Remplacez par l'ID de l'utilisateur connecté (via session)
-    $availability = $_POST['availability'];
+    if (isset($_POST['event_id'], $_POST['availability'])) {
+        $event_id = $_POST['event_id'];
+        $user_id = 1; // Simuler un utilisateur connecté, remplacez par votre logique (par ex., $_SESSION['user_id'])
+        $availability = $_POST['availability'];
 
-    $stmt = $pdo->prepare("INSERT INTO user_events (user_id, event_id, availability) VALUES (?, ?, ?)");
-    if ($stmt->execute([$user_id, $event_id, $availability])) {
-        echo '<div class="alert alert-success">Inscription réussie !</div>';
+        // Vérification si l'utilisateur est déjà inscrit
+        $check_stmt = $pdo->prepare("SELECT * FROM user_events WHERE user_id = ? AND event_id = ?");
+        $check_stmt->execute([$user_id, $event_id]);
+        if ($check_stmt->rowCount() > 0) {
+            echo '<div class="alert alert-warning text-center">Vous êtes déjà inscrit à cet événement.</div>';
+        } else {
+            // Inscription de l'utilisateur
+            $insert_stmt = $pdo->prepare("INSERT INTO user_events (user_id, event_id, availability) VALUES (?, ?, ?)");
+            if ($insert_stmt->execute([$user_id, $event_id, $availability])) {
+                echo '<div class="alert alert-success text-center">Inscription réussie !</div>';
+            } else {
+                echo '<div class="alert alert-danger text-center">Erreur lors de l\'inscription.</div>';
+            }
+        }
     } else {
-        echo '<div class="alert alert-danger">Erreur lors de l\'inscription.</div>';
+        echo '<div class="alert alert-danger text-center">Tous les champs doivent être remplis.</div>';
     }
 }
 ?>
