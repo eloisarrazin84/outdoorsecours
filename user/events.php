@@ -52,7 +52,6 @@ $events = $stmt->fetchAll();
     <title>Événements</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" rel="stylesheet">
-    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -126,47 +125,34 @@ $events = $stmt->fetchAll();
 <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const calendarEl = document.getElementById('calendar');
-
-    const calendar = new tui.Calendar(calendarEl, {
-        defaultView: 'month', // Vue par défaut
-        taskView: true,
-        scheduleView: ['time'],
-        useCreationPopup: true,
-        useDetailPopup: true,
-        month: {
-            startDayOfWeek: 1, // Commence la semaine le lundi
-        },
-        templates: {
-            timegridDisplayPrimaryTime: function (time) {
-                return time.hour + ':' + time.minutes;
+        const calendarEl = document.getElementById('calendar');
+        
+        const calendar = new tui.Calendar(calendarEl, {
+            defaultView: 'month',
+            taskView: true,
+            scheduleView: ['time'],
+            useCreationPopup: true,
+            useDetailPopup: true,
+            month: {
+                startDayOfWeek: 1
             },
-        },
-        schedules: [
-            <?php foreach ($events as $event): ?>
-            {
-                id: '<?= $event['id'] ?>',
-                title: '<?= addslashes($event['name']) ?>',
-                category: 'allday',
-                start: '<?= $event['date'] ?>',
-                end: '<?= $event['date'] ?>',
+            templates: {
+                timegridDisplayPrimaryTime: function(time) {
+                    return time.hour + ':' + time.minutes;
+                }
             },
-            <?php endforeach; ?>
-        ]
-    });
-
-    // Basculer entre la vue liste et la vue calendrier
-    document.getElementById('listViewBtn').addEventListener('click', function () {
-        document.getElementById('listView').style.display = 'block';
-        document.getElementById('calendarView').style.display = 'none';
-    });
-
-    document.getElementById('calendarViewBtn').addEventListener('click', function () {
-        document.getElementById('listView').style.display = 'none';
-        document.getElementById('calendarView').style.display = 'block';
-    });
-});
-
+            schedules: [
+                <?php foreach ($events as $event): ?>
+                {
+                    id: '<?= $event['id'] ?>',
+                    title: '<?= addslashes($event['name']) ?>',
+                    category: 'time',
+                    start: '<?= $event['date'] ?>',
+                    end: '<?= $event['date'] ?>'
+                },
+                <?php endforeach; ?>
+            ]
+        });
 
         // Basculer entre vue liste et vue calendrier
         document.getElementById('listViewBtn').addEventListener('click', function () {
