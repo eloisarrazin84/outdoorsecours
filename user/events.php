@@ -51,9 +51,7 @@ $events = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Événements</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-   <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
-<script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
+    <link href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -124,27 +122,37 @@ $events = $stmt->fetchAll();
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialiser FullCalendar
         const calendarEl = document.getElementById('calendar');
-
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth', // Vue par défaut
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay' // Vues disponibles
+        
+        const calendar = new tui.Calendar(calendarEl, {
+            defaultView: 'month',
+            taskView: true,
+            scheduleView: ['time'],
+            useCreationPopup: true,
+            useDetailPopup: true,
+            month: {
+                startDayOfWeek: 1
             },
-            events: 'events_json.php', // Charger les événements depuis le serveur
-            eventClick: function (info) {
-                alert('Événement : ' + info.event.title + '\nLieu : ' + info.event.extendedProps.description);
-            }
+            templates: {
+                timegridDisplayPrimaryTime: function(time) {
+                    return time.hour + ':' + time.minutes;
+                }
+            },
+            schedules: [
+                <?php foreach ($events as $event): ?>
+                {
+                    id: '<?= $event['id'] ?>',
+                    title: '<?= addslashes($event['name']) ?>',
+                    category: 'time',
+                    start: '<?= $event['date'] ?>',
+                    end: '<?= $event['date'] ?>'
+                },
+                <?php endforeach; ?>
+            ]
         });
-
-        calendar.render();
 
         // Basculer entre vue liste et vue calendrier
         document.getElementById('listViewBtn').addEventListener('click', function () {
