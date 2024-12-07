@@ -11,14 +11,15 @@ $stmt = $pdo->prepare("SELECT id, name, date, location FROM events ORDER BY date
 $stmt->execute();
 $events = $stmt->fetchAll();
 
-// Convertir les événements en format JSON pour FullCalendar
+// Préparer les événements pour Evo Calendar
 $eventsJson = [];
 foreach ($events as $event) {
     $eventsJson[] = [
         'id' => $event['id'],
-        'title' => $event['name'],
-        'start' => $event['date'],
-        'description' => $event['location']
+        'name' => $event['name'],
+        'date' => $event['date'],
+        'description' => $event['location'],
+        'type' => 'event' // Type peut être 'event', 'holiday', etc.
     ];
 }
 ?>
@@ -30,14 +31,16 @@ foreach ($events as $event) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Événements</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css">
+    <!-- Evo Calendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/css/evo-calendar.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/css/evo-calendar.royal-navy.min.css">
     <style>
         body {
             background-color: #f8f9fa;
         }
         #calendar {
-            max-width: 900px;
             margin: 50px auto;
+            max-width: 900px;
             background: #fff;
             padding: 20px;
             border-radius: 10px;
@@ -51,26 +54,23 @@ foreach ($events as $event) {
     <div id="calendar"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+<!-- Evo Calendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/js/evo-calendar.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
-
-        // Initialiser FullCalendar
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth', // Vue par défaut
-            headerToolbar: {
-                left: 'prev,next today', // Boutons
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay' // Vues disponibles
-            },
-            events: <?= json_encode($eventsJson) ?>, // Charger les événements depuis PHP
-            eventClick: function (info) { // Action lors du clic sur un événement
-                alert('Événement : ' + info.event.title + '\nLieu : ' + info.event.extendedProps.description);
-            }
+    $(document).ready(function () {
+        // Initialiser Evo Calendar
+        $('#calendar').evoCalendar({
+            theme: 'Royal Navy', // Thème
+            language: 'fr', // Langue française
+            todayHighlight: true, // Surligner la date d'aujourd'hui
+            calendarEvents: <?= json_encode($eventsJson) ?> // Charger les événements dynamiques depuis PHP
         });
 
-        calendar.render();
+        // Gestion des clics sur un événement
+        $('#calendar').on('selectEvent', function(event, activeEvent) {
+            alert(`Événement : ${activeEvent.name}\nLieu : ${activeEvent.description}`);
+        });
     });
 </script>
 </body>
