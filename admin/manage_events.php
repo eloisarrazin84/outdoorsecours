@@ -4,11 +4,13 @@ include '../config/db.php';
 // Gestion du formulaire de création d'un événement
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_event'])) {
     $name = $_POST['event_name'];
+    $description = $_POST['event_description'];
     $date = $_POST['event_date'];
+    $location = $_POST['event_location'];
 
     // Insertion dans la base de données
-    $stmt = $pdo->prepare("INSERT INTO events (name, date) VALUES (?, ?)");
-    if ($stmt->execute([$name, $date])) {
+    $stmt = $pdo->prepare("INSERT INTO events (name, description, date, location) VALUES (?, ?, ?, ?)");
+    if ($stmt->execute([$name, $description, $date, $location])) {
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } else {
@@ -67,8 +69,16 @@ $events = $stmt->fetchAll();
                     <input type="text" class="form-control" id="event_name" name="event_name" placeholder="Nom de l'événement" required>
                 </div>
                 <div class="mb-3">
+                    <label for="event_description" class="form-label">Description</label>
+                    <textarea class="form-control" id="event_description" name="event_description" placeholder="Description de l'événement" required></textarea>
+                </div>
+                <div class="mb-3">
                     <label for="event_date" class="form-label">Date</label>
                     <input type="date" class="form-control" id="event_date" name="event_date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="event_location" class="form-label">Lieu</label>
+                    <input type="text" class="form-control" id="event_location" name="event_location" placeholder="Lieu de l'événement" required>
                 </div>
                 <button type="submit" name="create_event" class="btn btn-primary">
                     <i class="fas fa-plus-circle"></i> Créer
@@ -89,7 +99,9 @@ $events = $stmt->fetchAll();
                         <tr>
                             <th>ID</th>
                             <th>Nom</th>
+                            <th>Description</th>
                             <th>Date</th>
+                            <th>Lieu</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -99,7 +111,9 @@ $events = $stmt->fetchAll();
                                 <tr>
                                     <td><?= htmlspecialchars($event['id']) ?></td>
                                     <td><?= htmlspecialchars($event['name']) ?></td>
+                                    <td><?= htmlspecialchars($event['description']) ?></td>
                                     <td><?= htmlspecialchars($event['date']) ?></td>
+                                    <td><?= htmlspecialchars($event['location']) ?></td>
                                     <td class="text-center">
                                         <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i> Modifier
@@ -115,7 +129,7 @@ $events = $stmt->fetchAll();
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="4" class="text-center">Aucun événement trouvé.</td>
+                                <td colspan="6" class="text-center">Aucun événement trouvé.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
