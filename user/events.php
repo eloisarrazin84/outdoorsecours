@@ -17,23 +17,23 @@ foreach ($events as $event) {
     $eventsJson[] = [
         'id' => $event['id'],
         'name' => $event['name'],
-        'date' => date('F/d/Y', strtotime($event['date'])), // Evo Calendar attend le format 'Month/day/Year'
+        'date' => date('F/d/Y', strtotime($event['date'])), // Format requis pour Evo Calendar
         'description' => $event['location'],
         'type' => 'event',
-        'color' => '#007bff'
+        'color' => '#007bff'  // Couleur personnalisée pour l'événement
     ];
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Événements - Evo Calendar</title>
+    <title>Events - Evo Calendar</title>
     <!-- Evo Calendar CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css"> <!-- Thème optionnel -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css"> <!-- Optional theme -->
     <style>
         body {
             background-color: #f8f9fa;
@@ -49,42 +49,32 @@ foreach ($events as $event) {
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="text-center mb-4"><i class="fas fa-calendar-alt"></i> Vue Calendrier</h1>
+    <h1 class="text-center mb-4"><i class="fas fa-calendar-alt"></i> Calendar View</h1>
     <!-- Evo Calendar -->
     <div id="calendar"></div>
 </div>
 
-<!-- Ajouter jQuery -->
+<!-- Add jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<!-- Evo Calendar JS -->
+<!-- Add Evo Calendar JS -->
 <script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
 <script>
     $(document).ready(function () {
-        // Configurer la langue française correctement
-        const frenchLanguage = {
-            days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
-            daysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
-            months: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-            monthsShort: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
-            today: "Aujourd'hui",
-            noEventForToday: "Aucun événement pour aujourd'hui.",
-            noEventForThisDay: "Aucun événement pour ce jour."
-        };
-
-        // Initialisation d'Evo Calendar avec la langue et les événements
+        // Initialize Evo Calendar with English language and events
         $("#calendar").evoCalendar({
-            language: 'en',
-            theme: "Midnight Blue", // Thème du calendrier
-            todayHighlight: true, // Surligner la date d'aujourd'hui
-            calendarEvents: <?= json_encode($eventsJson) ?>, // Charger les événements depuis PHP
-            languages: {
-                fr: frenchLanguage // Utilisation de la langue personnalisée
-            }
+            language: 'en', // Set language to English
+            theme: "Midnight Blue", // Optional theme
+            todayHighlight: true, // Highlight today's date
+            calendarEvents: <?= json_encode($eventsJson) ?>, // Load events from PHP
+            sidebarDisplayDefault: true, // Show the sidebar by default
+            sidebarToggler: true, // Enable sidebar toggle button
+            eventDisplayDefault: true, // Display events by default
+            eventListToggler: true, // Enable event list toggle button
         });
 
-        // Gestion des clics sur les événements
+        // Handle event selection
         $("#calendar").on('selectEvent', function (event, activeEvent) {
-            alert("Événement : " + activeEvent.name + "\nLieu : " + activeEvent.description);
+            alert("Event: " + activeEvent.name + "\nLocation: " + activeEvent.description);
         });
     });
 </script>
