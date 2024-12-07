@@ -52,6 +52,7 @@ $events = $stmt->fetchAll();
     <title>Événements</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css">
+    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.ie11.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -121,13 +122,17 @@ $events = $stmt->fetchAll();
         <div id="calendar" style="height: 600px;"></div>
     </div>
 </div>
-
-<script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
-<script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
-        
+
+        // Fonction pour formater l'heure
+        function formatTime(time) {
+            const hours = `${time.getHours()}`.padStart(2, '0');
+            const minutes = `${time.getMinutes()}`.padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
         // Créer une instance de TUI Calendar
         const calendar = new tui.Calendar(calendarEl, {
             defaultView: 'month',
@@ -138,10 +143,15 @@ $events = $stmt->fetchAll();
             month: {
                 startDayOfWeek: 1, // Début de la semaine (1 = Lundi)
             },
-            // En-tête avec boutons de navigation
             template: {
-                monthDayname: function (dayname) {
-                    return `<span class="calendar-dayname">${dayname.label}</span>`;
+                // Template pour les événements avec horaire
+                time(event) {
+                    const { start, end, title } = event;
+                    return `<span style="color: white;">${formatTime(start)}~${formatTime(end)} ${title}</span>`;
+                },
+                // Template pour les événements toute la journée
+                allday(event) {
+                    return `<span style="color: gray;">${event.title}</span>`;
                 },
             },
             theme: {
@@ -152,6 +162,11 @@ $events = $stmt->fetchAll();
                 'month.dayname.paddingLeft': '10px',
                 'month.dayname.fontSize': '14px',
                 'month.dayname.backgroundColor': 'inherit',
+                'month.schedule.height': '18px',
+                'month.schedule.borderRadius': '2px',
+                'month.schedule.marginTop': '2px',
+                'month.schedule.marginLeft': '10px',
+                'month.schedule.marginRight': '10px',
             },
         });
 
@@ -170,7 +185,12 @@ $events = $stmt->fetchAll();
         ];
         calendar.createEvents(events);
 
-        // Barre d'outils pour navigation
+        // Gérer les événements de clic sur les événements du calendrier
+        calendar.on('clickEvent', function ({ event }) {
+            alert(`Titre : ${event.title}\nLieu : ${event.location}`);
+        });
+
+        // Ajouter des boutons de navigation
         const prevButton = document.createElement('button');
         prevButton.innerHTML = 'Précédent';
         prevButton.className = 'btn btn-secondary mx-2';
