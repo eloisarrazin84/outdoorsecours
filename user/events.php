@@ -60,6 +60,28 @@ foreach ($events as $event) {
 <script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
 <script>
     $(document).ready(function () {
+        // Charger la langue française dans Evo Calendar
+        $.extend($.fn.evoCalendar.defaults, {
+            language: 'fr',
+            languages: {
+                fr: {
+                    days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                    daysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+                    months: [
+                        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                    ],
+                    monthsShort: [
+                        'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
+                        'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'
+                    ],
+                    today: "Aujourd'hui",
+                    noEventForToday: "Aucun événement pour aujourd'hui.",
+                    noEventForThisDay: "Aucun événement pour ce jour."
+                }
+            }
+        });
+
         // Initialisation d'Evo Calendar
         $("#calendar").evoCalendar({
             theme: "Midnight Blue", // Thème du calendrier
