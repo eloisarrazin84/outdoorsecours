@@ -19,96 +19,94 @@ $events = $stmt->fetchAll();
             background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
         }
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            background-color: #343a40;
-            color: #fff;
-            padding: 20px;
-        }
-        .sidebar h4 {
-            text-align: center;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-        .sidebar .nav-link {
-            color: #adb5bd;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .sidebar .nav-link:hover {
-            color: #fff;
-        }
-        .content {
-            margin-left: 250px;
-            padding: 20px;
-        }
-        .table thead {
-            background-color: #007bff;
+        .card-header {
+            background-color: #17a2b8;
             color: white;
+            font-weight: bold;
         }
         .btn-primary, .btn-primary:hover {
             background-color: #007bff;
             border: none;
         }
-        .btn-danger:hover {
-            background-color: #c82333;
+        .btn-warning, .btn-warning:hover {
+            background-color: #ffc107;
+            border: none;
         }
-        .card-header {
-            background-color: #007bff;
+        .btn-danger, .btn-danger:hover {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-info, .btn-info:hover {
+            background-color: #17a2b8;
+            border: none;
+        }
+        .table thead {
+            background-color: #17a2b8;
             color: white;
-            font-weight: bold;
         }
-        .search-bar {
-            max-width: 400px;
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
     </style>
     <title>Gestion des événements</title>
 </head>
 <body>
-    <div class="sidebar">
-        <h4><i class="fas fa-calendar-alt"></i> Gestion</h4>
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a href="manage_events.php" class="nav-link">
-                    <i class="fas fa-list"></i> Tous les événements
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="add_event.php" class="nav-link">
-                    <i class="fas fa-plus-circle"></i> Ajouter un événement
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-users"></i> Participants
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-chart-bar"></i> Statistiques
-                </a>
-            </li>
-        </ul>
-    </div>
+    <div class="container mt-4">
+        <!-- Retour au tableau de bord -->
+        <a href="#" class="btn btn-info mb-3">
+            <i class="fas fa-arrow-left"></i> Retour au Tableau de Bord
+        </a>
 
-    <div class="content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="text-primary">
-                <i class="fas fa-calendar-alt"></i> Tous les événements
-            </h1>
-            <div class="input-group search-bar">
-                <input type="text" class="form-control" placeholder="Rechercher...">
-                <button class="btn btn-primary">
-                    <i class="fas fa-search"></i>
-                </button>
+        <!-- Section Création d'événements -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-plus-circle"></i> Créer un Nouvel Événement
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="eventName" class="form-label">Nom de l'événement</label>
+                        <input type="text" class="form-control" id="eventName" placeholder="Nom de l'événement">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventDate" class="form-label">Date de l'événement</label>
+                        <input type="date" class="form-control" id="eventDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventLocation" class="form-label">Lieu</label>
+                        <input type="text" class="form-control" id="eventLocation" placeholder="Lieu de l'événement">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Créer
+                    </button>
+                </form>
             </div>
         </div>
 
-        <div class="card shadow-sm">
+        <!-- Section Filtrage des événements -->
+        <div class="card mb-4">
             <div class="card-header">
-                Liste des événements
+                <i class="fas fa-filter"></i> Filtrer les Événements
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="filterEvent" class="form-label">Filtrer par Nom</label>
+                        <input type="text" class="form-control" id="filterEvent" placeholder="Nom de l'événement">
+                    </div>
+                    <button type="submit" class="btn btn-info">
+                        <i class="fas fa-search"></i> Filtrer
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Section Liste des événements -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-list"></i> Liste des Événements
             </div>
             <div class="card-body">
                 <table class="table table-striped table-hover">
@@ -116,7 +114,6 @@ $events = $stmt->fetchAll();
                         <tr>
                             <th>ID</th>
                             <th>Nom</th>
-                            <th>Description</th>
                             <th>Date</th>
                             <th>Lieu</th>
                             <th class="text-center">Actions</th>
@@ -127,11 +124,10 @@ $events = $stmt->fetchAll();
                             <tr>
                                 <td><?= htmlspecialchars($event['id']) ?></td>
                                 <td><?= htmlspecialchars($event['name']) ?></td>
-                                <td><?= htmlspecialchars($event['description']) ?></td>
                                 <td><?= htmlspecialchars($event['date']) ?></td>
                                 <td><?= htmlspecialchars($event['location']) ?></td>
                                 <td class="text-center">
-                                    <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-warning btn-sm me-2">
+                                    <a href="edit_event.php?id=<?= $event['id'] ?>" class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i> Modifier
                                     </a>
                                     <a href="delete_event.php?id=<?= $event['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous vraiment supprimer cet événement ?');">
