@@ -45,7 +45,7 @@ foreach ($events as $event) {
 <script>
     $(document).ready(function () {
         $("#calendar").evoCalendar({
-            language: 'fr', // Calendar in English
+            language: 'en', // Calendar in English
             theme: "Midnight Blue", // Optional theme
             todayHighlight: true,
             sidebarDisplayDefault: true,
