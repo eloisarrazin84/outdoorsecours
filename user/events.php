@@ -1,7 +1,4 @@
 <?php
-header('Access-Control-Allow-Origin: *'); // Permettre l'accès depuis toutes les origines
-header('Content-Type: application/json'); // Définir le type de contenu
-
 include '../config/db.php';
 
 // Activer le débogage
