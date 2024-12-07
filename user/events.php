@@ -74,7 +74,7 @@ foreach ($events as $event) {
     $(document).ready(function () {
         $("#calendar").evoCalendar({
             language: 'en',
-            theme: "Midnight Blue", // Design personnalisé
+            theme: "", // Design personnalisé
             todayHighlight: true,
             sidebarDisplayDefault: true,
             sidebarToggler: true,
