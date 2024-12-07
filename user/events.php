@@ -126,34 +126,47 @@ $events = $stmt->fetchAll();
 <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
-        
-        const calendar = new tui.Calendar(calendarEl, {
-            defaultView: 'month',
-            taskView: true,
-            scheduleView: ['time'],
-            useCreationPopup: true,
-            useDetailPopup: true,
-            month: {
-                startDayOfWeek: 1
+    const calendarEl = document.getElementById('calendar');
+
+    const calendar = new tui.Calendar(calendarEl, {
+        defaultView: 'month', // Vue par défaut
+        taskView: true,
+        scheduleView: ['time'],
+        useCreationPopup: true,
+        useDetailPopup: true,
+        month: {
+            startDayOfWeek: 1, // Commence la semaine le lundi
+        },
+        templates: {
+            timegridDisplayPrimaryTime: function (time) {
+                return time.hour + ':' + time.minutes;
             },
-            templates: {
-                timegridDisplayPrimaryTime: function(time) {
-                    return time.hour + ':' + time.minutes;
-                }
+        },
+        schedules: [
+            <?php foreach ($events as $event): ?>
+            {
+                id: '<?= $event['id'] ?>',
+                title: '<?= addslashes($event['name']) ?>',
+                category: 'allday',
+                start: '<?= $event['date'] ?>',
+                end: '<?= $event['date'] ?>',
             },
-            schedules: [
-                <?php foreach ($events as $event): ?>
-                {
-                    id: '<?= $event['id'] ?>',
-                    title: '<?= addslashes($event['name']) ?>',
-                    category: 'time',
-                    start: '<?= $event['date'] ?>',
-                    end: '<?= $event['date'] ?>'
-                },
-                <?php endforeach; ?>
-            ]
-        });
+            <?php endforeach; ?>
+        ]
+    });
+
+    // Basculer entre la vue liste et la vue calendrier
+    document.getElementById('listViewBtn').addEventListener('click', function () {
+        document.getElementById('listView').style.display = 'block';
+        document.getElementById('calendarView').style.display = 'none';
+    });
+
+    document.getElementById('calendarViewBtn').addEventListener('click', function () {
+        document.getElementById('listView').style.display = 'none';
+        document.getElementById('calendarView').style.display = 'block';
+    });
+});
+
 
         // Basculer entre vue liste et vue calendrier
         document.getElementById('listViewBtn').addEventListener('click', function () {
