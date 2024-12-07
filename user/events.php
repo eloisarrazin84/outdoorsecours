@@ -51,8 +51,7 @@ $events = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Événements</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
-    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css">
     <style>
         body {
             background-color: #f8f9fa;
@@ -119,7 +118,7 @@ $events = $stmt->fetchAll();
     <!-- Vue Calendrier -->
     <div id="calendarView" style="display: none;">
         <h1 class="text-center mb-4"><i class="fas fa-calendar-alt"></i> Vue Calendrier</h1>
-        <div id="calendar"></div>
+        <div id="calendar" style="height: 600px;"></div>
     </div>
 </div>
 
@@ -134,26 +133,22 @@ $events = $stmt->fetchAll();
             scheduleView: ['time'],
             useCreationPopup: true,
             useDetailPopup: true,
-            month: {
-                startDayOfWeek: 1
-            },
-            templates: {
-                timegridDisplayPrimaryTime: function(time) {
-                    return time.hour + ':' + time.minutes;
-                }
-            },
-            schedules: [
-                <?php foreach ($events as $event): ?>
-                {
-                    id: '<?= $event['id'] ?>',
-                    title: '<?= addslashes($event['name']) ?>',
-                    category: 'time',
-                    start: '<?= $event['date'] ?>',
-                    end: '<?= $event['date'] ?>'
-                },
-                <?php endforeach; ?>
-            ]
         });
+
+        // Ajouter les événements au calendrier
+        const events = [
+            <?php foreach ($events as $event): ?>
+            {
+                id: '<?= $event['id'] ?>',
+                title: '<?= addslashes($event['name']) ?>',
+                start: '<?= $event['date'] ?>',
+                end: '<?= $event['date'] ?>',
+                location: '<?= addslashes($event['location']) ?>',
+                isAllday: true,
+            },
+            <?php endforeach; ?>
+        ];
+        calendar.createEvents(events);
 
         // Basculer entre vue liste et vue calendrier
         document.getElementById('listViewBtn').addEventListener('click', function () {
