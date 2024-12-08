@@ -98,32 +98,45 @@ foreach ($events as $event) {
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        /* Masquer les sections par défaut */
+        #calendarView, #cardView {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Titre de la section Calendrier -->
+    <!-- Titre de la section -->
     <div class="calendar-header">
         <h1><i class="fas fa-calendar-alt"></i> Vue Calendrier</h1>
     </div>
 
-    <!-- Calendrier -->
-    <div id="calendar"></div>
-
-    <!-- Titre de la section Cartes -->
-    <div class="card-header">
-        <h1><i class="fas fa-list"></i> Événements sous forme de cartes</h1>
+    <!-- Boutons pour changer de vue -->
+    <div class="text-center">
+        <button onclick="showCalendarView()" class="btn btn-primary">Vue Calendrier</button>
+        <button onclick="showCardView()" class="btn btn-secondary">Vue Cartes</button>
     </div>
 
-    <!-- Conteneur pour les cartes des événements -->
-    <div class="card-container" id="cardContainer">
-        <?php foreach ($events as $event): ?>
-            <div class="event-card" onclick="showEventDetails(<?= $event['id'] ?>)">
-                <h5><?= htmlspecialchars($event['name']) ?></h5>
-                <p class="event-date"><?= date('F d, Y', strtotime($event['date'])) ?></p>
-            </div>
-        <?php endforeach; ?>
+    <!-- Vue Calendrier -->
+    <div id="calendarView">
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Vue Cartes -->
+    <div id="cardView">
+        <div class="card-header">
+            <h1><i class="fas fa-list"></i> Événements sous forme de cartes</h1>
+        </div>
+        <!-- Conteneur pour les cartes des événements -->
+        <div class="card-container" id="cardContainer">
+            <?php foreach ($events as $event): ?>
+                <div class="event-card" onclick="showEventDetails(<?= $event['id'] ?>)">
+                    <h5><?= htmlspecialchars($event['name']) ?></h5>
+                    <p class="event-date"><?= date('F d, Y', strtotime($event['date'])) ?></p>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <!-- Détails de l'événement -->
@@ -170,6 +183,18 @@ foreach ($events as $event) {
             document.getElementById('eventInfo').innerHTML = detailsHTML;
             document.getElementById('eventDetail').style.display = 'block';
         }
+    }
+
+    // Fonction pour afficher la vue Calendrier
+    function showCalendarView() {
+        document.getElementById('calendarView').style.display = 'block';
+        document.getElementById('cardView').style.display = 'none';
+    }
+
+    // Fonction pour afficher la vue Cartes
+    function showCardView() {
+        document.getElementById('calendarView').style.display = 'none';
+        document.getElementById('cardView').style.display = 'block';
     }
 </script>
 
