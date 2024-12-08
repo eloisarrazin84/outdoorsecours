@@ -123,6 +123,16 @@ foreach ($events as $event) {
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        @media (max-width: 768px) {
+            .calendar-header {
+                font-size: 24px;
+            }
+            .calendar-controls button {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>  
@@ -154,41 +164,40 @@ foreach ($events as $event) {
             </div>
         </div>
     </div>
-</div>
 
-<!-- Jquery et Evo Calendar JS -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Initialiser le calendrier
-        $("#calendar").evoCalendar({
-            language: 'en',
-            theme: "",
-            todayHighlight: true,
-            sidebarDisplayDefault: true,
-            sidebarToggler: true,
-            eventDisplayDefault: true,
-            eventListToggler: true,
-            calendarEvents: <?= json_encode($eventsJson) ?>, // Événements dynamiques
-        });
+    <!-- Jquery et Evo Calendar JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialiser le calendrier
+            $("#calendar").evoCalendar({
+                language: 'en',
+                theme: "",
+                todayHighlight: true,
+                sidebarDisplayDefault: true,
+                sidebarToggler: true,
+                eventDisplayDefault: true,
+                eventListToggler: true,
+                calendarEvents: <?= json_encode($eventsJson) ?>, // Événements dynamiques
+            });
 
-        // Basculer entre les vues
-        $('#calendarViewBtn').on('click', function () {
-            $('#calendarView').show();
-            $('#cardView').hide();
-            $(this).addClass('active');
-            $('#cardViewBtn').removeClass('active');
-        });
+            // Basculer entre les vues
+            $('#calendarViewBtn').on('click', function () {
+                $('#calendarView').show();
+                $('#cardView').hide();
+                $(this).addClass('active');
+                $('#cardViewBtn').removeClass('active');
+            });
 
-        $('#cardViewBtn').on('click', function () {
-            $('#cardView').show();
-            $('#calendarView').hide();
-            $(this).addClass('active');
-            $('#calendarViewBtn').removeClass('active');
+            $('#cardViewBtn').on('click', function () {
+                $('#cardView').show();
+                $('#calendarView').hide();
+                $(this).addClass('active');
+                $('#calendarViewBtn').removeClass('active');
+            });
         });
-    });
-</script>
+    </script>
 
 </body>
 </html>
