@@ -26,7 +26,7 @@ foreach ($events as $event) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Événements</title>
+    <title>Calendrier des Événements</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
@@ -45,7 +45,7 @@ foreach ($events as $event) {
         .calendar-header {
             text-align: center;
             margin-bottom: 20px;
-            font-size: 32px;
+            font-size: 30px;
             font-weight: bold;
             color: #5b6e84;
         }
@@ -99,6 +99,19 @@ foreach ($events as $event) {
             color: #555;
             margin-top: 8px;
         }
+        .view-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #5b6e84;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .event-header {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -124,7 +137,7 @@ foreach ($events as $event) {
 
     <!-- Vue Cartes -->
     <div id="cardView" style="display: none;">
-        <h2 class="text-center mb-4">Événements sous forme de cartes</h2>
+        <h2 class="view-title">Événements sous forme de cartes</h2>
         <div class="event-card">
             <div class="event-title">Ultra</div>
             <div class="event-details">
@@ -144,7 +157,7 @@ foreach ($events as $event) {
         // Initialiser le calendrier
         $("#calendar").evoCalendar({
             language: 'en',
-            theme: "",
+            theme: "midnight-blue",
             todayHighlight: true,
             sidebarDisplayDefault: true,
             sidebarToggler: true,
