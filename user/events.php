@@ -169,6 +169,9 @@ foreach ($events as $event) {
     </div>
 
     <!-- Jquery, FullCalendar JS and Dependencies -->
+<script src="
+https://cdn.jsdelivr.net/npm/fullcalendar@7.0.0-beta.1/index.global.min.js
+"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.js"></script>
