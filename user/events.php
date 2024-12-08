@@ -26,7 +26,7 @@ foreach ($events as $event) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier des Événements</title>
+    <title>Prochains Événements</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
@@ -41,6 +41,20 @@ foreach ($events as $event) {
             max-width: 1200px;
             margin: auto;
             padding: 30px 15px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .header img {
+            height: 40px;
+        }
+        .calendar-header {
+            font-size: 30px;
+            font-weight: bold;
+            color: #5b6e84;
         }
         .calendar-controls {
             text-align: center;
@@ -99,80 +113,82 @@ foreach ($events as $event) {
             margin-top: 30px;
             text-align: center;
         }
+        .event-header {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        /* Pour les petits écrans */
-        @media (max-width: 768px) {
-            .calendar-controls {
-                margin-top: 15px;
-            }
-            .calendar-controls button {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-        }
     </style>
 </head>
 <body>  
-    <div class="container">
-        <div class="calendar-controls">
-            <button id="calendarViewBtn" class="btn btn-secondary active">Prochain événement</button>
-            <button id="cardViewBtn" class="btn btn-secondary">Vue Cartes</button>
-        </div>
+    <!-- Header Section with Logo and Title -->
+    <div class="header">
+        <img src="https://outdoorsecours.fr/wp-content/uploads/2023/07/thumbnail_image001-1.png" alt="Outdoor Secours Logo">
+        <div class="calendar-header">Prochains Événements</div>
+    </div>
+    
+    <!-- Button controls for calendar and card view -->
+    <div class="calendar-controls">
+        <button id="calendarViewBtn" class="btn btn-secondary active">Vue Calendrier</button>
+        <button id="cardViewBtn" class="btn btn-secondary">Vue Cartes</button>
+    </div>
+    
+    <!-- Vue Calendrier -->
+    <div id="calendarView" style="display: block;">
+        <div id="calendar"></div>
+    </div>
 
-        <!-- Vue Calendrier -->
-        <div id="calendarView" style="display: block;">
-            <div id="calendar"></div>
-        </div>
-
-        <!-- Vue Cartes -->
-        <div id="cardView" style="display: none;">
-            <h2 class="view-title">Événements sous forme de cartes</h2>
-            <div class="event-card">
-                <div class="event-title">Ultra</div>
-                <div class="event-details">
-                    <strong>Date:</strong> December 29, 2024 <br>
-                    <strong>Description:</strong> test nnfc sd^lfsqfsddsgvfsdggsd <br>
-                    <strong>Lieu:</strong> Biviers
-                </div>
+    <!-- Vue Cartes -->
+    <div id="cardView" style="display: none;">
+        <div class="event-card">
+            <div class="event-title">Ultra</div>
+            <div class="event-details">
+                <strong>Date:</strong> December 29, 2024 <br>
+                <strong>Description:</strong> test nnfc sd^lfsqfsddsgvfsdggsd <br>
+                <strong>Lieu:</strong> Biviers
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Jquery et Evo Calendar JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Initialiser le calendrier
-            $("#calendar").evoCalendar({
-                language: 'en',
-                theme: "",
-                todayHighlight: true,
-                sidebarDisplayDefault: true,
-                sidebarToggler: true,
-                eventDisplayDefault: true,
-                eventListToggler: true,
-                calendarEvents: <?= json_encode($eventsJson) ?>, // Événements dynamiques
-            });
-
-            // Basculer entre les vues
-            $('#calendarViewBtn').on('click', function () {
-                $('#calendarView').show();
-                $('#cardView').hide();
-                $(this).addClass('active');
-                $('#cardViewBtn').removeClass('active');
-            });
-
-            $('#cardViewBtn').on('click', function () {
-                $('#cardView').show();
-                $('#calendarView').hide();
-                $(this).addClass('active');
-                $('#calendarViewBtn').removeClass('active');
-            });
+<!-- Jquery et Evo Calendar JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Initialiser le calendrier
+        $("#calendar").evoCalendar({
+            language: 'en',
+            theme: "",
+            todayHighlight: true,
+            sidebarDisplayDefault: true,
+            sidebarToggler: true,
+            eventDisplayDefault: true,
+            eventListToggler: true,
+            calendarEvents: <?= json_encode($eventsJson) ?>, // Événements dynamiques
         });
-    </script>
+
+        // Basculer entre les vues
+        $('#calendarViewBtn').on('click', function () {
+            $('#calendarView').show();
+            $('#cardView').hide();
+            $(this).addClass('active');
+            $('#cardViewBtn').removeClass('active');
+        });
+
+        $('#cardViewBtn').on('click', function () {
+            $('#cardView').show();
+            $('#calendarView').hide();
+            $(this).addClass('active');
+            $('#calendarViewBtn').removeClass('active');
+        });
+    });
+</script>
+
 </body>
 </html>
