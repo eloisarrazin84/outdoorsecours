@@ -110,6 +110,16 @@ foreach ($events as $event) {
             eventListToggler: true,
             calendarEvents: <?= json_encode($eventsJson) ?>, // Ajouter les événements
         });
+
+        // Ajouter des événements pour naviguer entre les mois
+        $('#prevMonth').on('click', function () {
+            $("#calendar").evoCalendar('prevMonth');
+        });
+
+        $('#nextMonth').on('click', function () {
+            $("#calendar").evoCalendar('nextMonth');
+        });
+    });
 </script>
 </body>
 </html>
