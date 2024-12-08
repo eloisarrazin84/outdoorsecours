@@ -41,15 +41,17 @@ foreach ($events as $event) {
             max-width: 1200px;
             margin: auto;
             padding: 30px 15px;
+            text-align: center; /* Centre tout dans le container */
         }
         .header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             margin-bottom: 30px;
         }
         .header img {
-            height: 40px;
+            height: 50px; /* Ajuster la taille du logo */
+            margin-right: 10px;
         }
         .calendar-header {
             font-size: 30px;
@@ -92,6 +94,9 @@ foreach ($events as $event) {
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 15px;
             transition: transform 0.3s ease;
+            width: 100%;
+            max-width: 400px; /* Limite la largeur des cartes */
+            margin: auto;
         }
         .event-card:hover {
             transform: scale(1.05);
