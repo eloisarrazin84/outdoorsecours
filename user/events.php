@@ -89,10 +89,7 @@ foreach ($events as $event) {
     </div>
     <div id="calendar"></div>
 
-    <div class="calendar-controls">
-        <button id="prevMonth" class="btn btn-secondary">Previous</button>
-        <button id="nextMonth" class="btn btn-secondary">Next</button>
-    </div>
+    <!-- Supprimer la section de boutons de navigation -->
 </div>
 
 <!-- Jquery et Evo Calendar JS -->
@@ -111,14 +108,7 @@ foreach ($events as $event) {
             calendarEvents: <?= json_encode($eventsJson) ?>, // Ajouter les événements
         });
 
-        // Ajouter des événements pour naviguer entre les mois
-        $('#prevMonth').on('click', function () {
-            $("#calendar").evoCalendar('prevMonth');
-        });
-
-        $('#nextMonth').on('click', function () {
-            $("#calendar").evoCalendar('nextMonth');
-        });
+        // La gestion des événements de navigation a été supprimée
     });
 </script>
 </body>
