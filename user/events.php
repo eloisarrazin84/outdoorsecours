@@ -26,15 +26,13 @@ foreach ($events as $event) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prochains Événements</title>
+
     <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid/main.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/list/main.css" rel="stylesheet">
-    
-    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS pour la mise en page -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -46,16 +44,16 @@ foreach ($events as $event) {
             max-width: 1200px;
             margin: auto;
             padding: 30px 15px;
-            text-align: center; /* Centre tout dans le container */
+            text-align: center;
         }
         .header {
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             margin-bottom: 30px;
         }
         .header img {
-            height: 50px; /* Ajuster la taille du logo */
+            height: 50px;
             margin-right: 10px;
         }
         .calendar-header {
@@ -93,7 +91,7 @@ foreach ($events as $event) {
             margin-bottom: 15px;
             transition: transform 0.3s ease;
             width: 100%;
-            max-width: 400px; /* Limite la largeur des cartes */
+            max-width: 400px;
             margin: auto;
         }
         .event-card:hover {
@@ -116,17 +114,6 @@ foreach ($events as $event) {
             margin-top: 30px;
             text-align: center;
         }
-        .event-header {
-            font-size: 22px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         @media (max-width: 768px) {
             .calendar-header {
                 font-size: 24px;
@@ -138,19 +125,19 @@ foreach ($events as $event) {
         }
     </style>
 </head>
-<body>  
-    <!-- Header Section with Logo and Title -->
+<body>
+    <!-- Header with Logo and Title -->
     <div class="header">
         <img src="https://outdoorsecours.fr/wp-content/uploads/2023/07/thumbnail_image001-1.png" alt="Outdoor Secours Logo">
         <div class="calendar-header">Prochains Événements</div>
     </div>
-    
-    <!-- Button controls for calendar and card view -->
+
+    <!-- Controls for toggling calendar view and card view -->
     <div class="calendar-controls">
         <button id="calendarViewBtn" class="btn btn-secondary active">Vue Calendrier</button>
         <button id="cardViewBtn" class="btn btn-secondary">Vue Cartes</button>
     </div>
-    
+
     <!-- Vue Calendrier -->
     <div id="calendarView" style="display: block;">
         <div id="calendar"></div>
@@ -168,28 +155,23 @@ foreach ($events as $event) {
         </div>
     </div>
 
-    <!-- Jquery, FullCalendar JS and Dependencies -->
-<script src="
-https://cdn.jsdelivr.net/npm/fullcalendar@7.0.0-beta.1/index.global.min.js
-"></script>
+    <!-- jQuery and FullCalendar JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/list/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
     <script>
         $(document).ready(function () {
-            // Initialiser le calendrier FullCalendar
-            var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-                initialView: 'dayGridMonth', // Vue par défaut du calendrier
+            // Initialize FullCalendar
+            const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'dayGridMonth', // Default view for the calendar
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                events: <?= json_encode($eventsJson) ?>, // Charger les événements dynamiquement
+                events: <?= json_encode($eventsJson) ?>, // Load dynamic events
                 eventClick: function(info) {
-                    // Afficher les détails de l'événement au clic
+                    // Show event details on click
                     $('#cardView').show();
                     $('#calendarView').hide();
                     var eventData = info.event.extendedProps;
@@ -208,7 +190,7 @@ https://cdn.jsdelivr.net/npm/fullcalendar@7.0.0-beta.1/index.global.min.js
             });
             calendar.render();
 
-            // Basculer entre les vues
+            // Toggle between calendar view and card view
             $('#calendarViewBtn').on('click', function () {
                 $('#calendarView').show();
                 $('#cardView').hide();
