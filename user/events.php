@@ -118,13 +118,7 @@ foreach ($events as $event) {
         }
     </style>
 </head>
-<body>
-
-<div class="container">
-    <div class="calendar-header">
-        <h1><i class="fas fa-calendar-alt"></i> Vue Calendrier</h1>
-    </div>
-    
+<body>  
     <div class="calendar-controls">
         <button id="calendarViewBtn" class="btn btn-secondary active">Vue Calendrier</button>
         <button id="cardViewBtn" class="btn btn-secondary">Vue Cartes</button>
@@ -137,7 +131,6 @@ foreach ($events as $event) {
 
     <!-- Vue Cartes -->
     <div id="cardView" style="display: none;">
-        <h2 class="view-title">Événements sous forme de cartes</h2>
         <div class="event-card">
             <div class="event-title">Ultra</div>
             <div class="event-details">
@@ -157,7 +150,7 @@ foreach ($events as $event) {
         // Initialiser le calendrier
         $("#calendar").evoCalendar({
             language: 'en',
-            theme: "midnight-blue",
+            theme: "",
             todayHighlight: true,
             sidebarDisplayDefault: true,
             sidebarToggler: true,
