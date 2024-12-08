@@ -42,13 +42,6 @@ foreach ($events as $event) {
             margin: auto;
             padding: 30px 15px;
         }
-        .calendar-header {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 30px;
-            font-weight: bold;
-            color: #5b6e84;
-        }
         .calendar-controls {
             text-align: center;
             margin-top: 20px;
@@ -106,12 +99,6 @@ foreach ($events as $event) {
             margin-top: 30px;
             text-align: center;
         }
-        .event-header {
-            font-size: 22px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -130,12 +117,8 @@ foreach ($events as $event) {
 </head>
 <body>  
     <div class="container">
-        <div class="calendar-header">
-            <h1><i class="fas fa-calendar-alt"></i> Vue Calendrier</h1>
-        </div>
-
         <div class="calendar-controls">
-            <button id="calendarViewBtn" class="btn btn-secondary active">Vue Calendrier</button>
+            <button id="calendarViewBtn" class="btn btn-secondary active">Prochain événement</button>
             <button id="cardViewBtn" class="btn btn-secondary">Vue Cartes</button>
         </div>
 
