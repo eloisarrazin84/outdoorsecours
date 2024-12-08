@@ -26,169 +26,145 @@ foreach ($events as $event) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier d'Événements</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
+    <title>Événements</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f6f9;
+            background-color: #f8f9fa;
             margin: 0;
             padding: 0;
         }
-
         .container {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
+            margin: auto;
+            padding: 30px 15px;
         }
-
         .calendar-header {
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 28px;
-            color: #5f6368;
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #5b6e84;
         }
-
         .calendar-controls {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
         }
-
         .calendar-controls button {
-            background-color: #3c7ab6;
+            background-color: #007bff;
             color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
             border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
             margin: 5px;
             cursor: pointer;
-            font-size: 16px;
             transition: background-color 0.3s ease;
-        }
-
-        .calendar-controls button:hover {
-            background-color: #285d8f;
-        }
-
-        #calendar {
-            border-radius: 10px;
-            background-color: white;
-            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Cartes des événements */
-        .event-cards-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        .event-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-            width: 300px;
-            padding: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .event-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .event-card .event-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #5f6368;
-            margin-bottom: 10px;
-        }
-
-        .event-card .event-date {
-            font-size: 14px;
-            color: #8a8a8a;
-            margin-bottom: 15px;
-        }
-
-        .event-card .event-description {
             font-size: 16px;
-            color: #636363;
+        }
+        .calendar-controls button:hover {
+            background-color: #0056b3;
+        }
+        .calendar-controls button.active {
+            background-color: #0056b3;
+        }
+        #calendar {
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .event-card {
+            border: 1px solid #ddd;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 15px;
+            transition: transform 0.3s ease;
         }
-
-        .event-card .event-location {
+        .event-card:hover {
+            transform: scale(1.05);
+        }
+        .event-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .event-details {
             font-size: 14px;
-            color: #285d8f;
+            color: #555;
+            margin-top: 8px;
         }
-
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Entête -->
     <div class="calendar-header">
-        <h1>Vue Calendrier</h1>
+        <h1><i class="fas fa-calendar-alt"></i> Vue Calendrier</h1>
     </div>
-
-    <!-- Vue Calendrier -->
-    <div id="calendar"></div>
-
-    <!-- Contrôles pour changer de vue -->
+    
     <div class="calendar-controls">
-        <button id="calendarViewBtn">Vue Calendrier</button>
-        <button id="cardsViewBtn">Vue Cartes</button>
+        <button id="calendarViewBtn" class="btn btn-secondary active">Vue Calendrier</button>
+        <button id="cardViewBtn" class="btn btn-secondary">Vue Cartes</button>
+    </div>
+    
+    <!-- Vue Calendrier -->
+    <div id="calendarView" style="display: block;">
+        <div id="calendar"></div>
     </div>
 
-    <!-- Événements sous forme de cartes -->
-    <div class="event-cards-container" id="eventsCardsView" style="display: none;">
-        <!-- Cartes des événements -->
-        <!-- Dynamique avec PHP -->
-        <?php foreach ($events as $event): ?>
+    <!-- Vue Cartes -->
+    <div id="cardView" style="display: none;">
+        <h2 class="text-center mb-4">Événements sous forme de cartes</h2>
         <div class="event-card">
-            <div class="event-title"><?= htmlspecialchars($event['name']) ?></div>
-            <div class="event-date"><?= htmlspecialchars($event['date']) ?></div>
-            <div class="event-description"><?= htmlspecialchars($event['description']) ?></div>
-            <div class="event-location"><?= htmlspecialchars($event['location']) ?></div>
+            <div class="event-title">Ultra</div>
+            <div class="event-details">
+                <strong>Date:</strong> December 29, 2024 <br>
+                <strong>Description:</strong> test nnfc sd^lfsqfsddsgvfsdggsd <br>
+                <strong>Lieu:</strong> Biviers
+            </div>
         </div>
-        <?php endforeach; ?>
     </div>
-
 </div>
 
 <!-- Jquery et Evo Calendar JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
-
 <script>
     $(document).ready(function () {
-        // Initialisation du calendrier
+        // Initialiser le calendrier
         $("#calendar").evoCalendar({
             language: 'en',
-            theme: "", // Design moderne
+            theme: "midnight-blue",
             todayHighlight: true,
             sidebarDisplayDefault: true,
             sidebarToggler: true,
             eventDisplayDefault: true,
             eventListToggler: true,
-            calendarEvents: <?= json_encode($eventsJson) ?>, // Charger les événements depuis la base de données
+            calendarEvents: <?= json_encode($eventsJson) ?>, // Événements dynamiques
         });
 
-        // Changer de vue (Calendrier ou Cartes)
+        // Basculer entre les vues
         $('#calendarViewBtn').on('click', function () {
-            $('#calendar').show();
-            $('#eventsCardsView').hide();
-            $('#calendarViewBtn').addClass('active');
-            $('#cardsViewBtn').removeClass('active');
+            $('#calendarView').show();
+            $('#cardView').hide();
+            $(this).addClass('active');
+            $('#cardViewBtn').removeClass('active');
         });
 
-        $('#cardsViewBtn').on('click', function () {
-            $('#calendar').hide();
-            $('#eventsCardsView').show();
-            $('#cardsViewBtn').addClass('active');
+        $('#cardViewBtn').on('click', function () {
+            $('#cardView').show();
+            $('#calendarView').hide();
+            $(this).addClass('active');
             $('#calendarViewBtn').removeClass('active');
         });
     });
