@@ -13,9 +13,9 @@ foreach ($events as $event) {
         'id' => $event['id'],
         'name' => $event['name'],
         'date' => date('F/d/Y', strtotime($event['date'])),
-        'description' => $event['description'], // Inclure la description ici
-        'location' => $event['location'], // Lieu de l'événement
-        'color' => '#007bff', // Utilisation de couleurs personnalisées
+        'description' => $event['description'],
+        'location' => $event['location'],
+        'color' => '#007bff', // Couleur personnalisée
         'category' => 'event',
     ];
 }
@@ -27,7 +27,6 @@ foreach ($events as $event) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Calendar</title>
-    <!-- Style du calendrier avec un design plus moderne -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
     <style>
@@ -87,6 +86,20 @@ foreach ($events as $event) {
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .event-details h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #5b6e84;
+        }
+        .event-details p {
+            margin: 8px 0;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .event-details strong {
+            color: #007bff;
+        }
     </style>
 </head>
 <body>
@@ -99,13 +112,12 @@ foreach ($events as $event) {
 
     <div class="event-details" id="eventDetails" style="display: none;">
         <h3 id="eventTitle">Event Details</h3>
-        <p id="eventDescription"></p> <!-- Description de l'événement -->
+        <p id="eventDescription"></p>
         <p><strong>Date:</strong> <span id="eventDate"></span></p>
-        <p><strong>Location:</strong> <span id="eventLocation"></span></p> <!-- Affichage du lieu -->
+        <p><strong>Location:</strong> <span id="eventLocation"></span></p>
     </div>
 </div>
 
-<!-- Jquery et Evo Calendar JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
 <script>
@@ -118,7 +130,7 @@ foreach ($events as $event) {
             sidebarToggler: true,
             eventDisplayDefault: true,
             eventListToggler: true,
-            calendarEvents: <?= json_encode($eventsJson) ?>, // Ajouter les événements
+            calendarEvents: <?= json_encode($eventsJson) ?>,
             eventClick: function(event) {
                 // Afficher les détails de l'événement
                 $('#eventDetails').show();
