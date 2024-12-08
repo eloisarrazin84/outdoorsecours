@@ -2,7 +2,7 @@
 include '../config/db.php';
 
 // Récupérer les événements
-$stmt = $pdo->prepare("SELECT id, name, date, location FROM events ORDER BY date ASC");
+$stmt = $pdo->prepare("SELECT id, name, date, location, description FROM events ORDER BY date ASC");
 $stmt->execute();
 $events = $stmt->fetchAll();
 
@@ -25,7 +25,7 @@ foreach ($events as $event) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue Calendrier et Cartes</title>
+    <title>Calendrier et Détails des Événements</title>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
     <style>
@@ -84,6 +84,20 @@ foreach ($events as $event) {
             font-size: 12px;
             color: #888;
         }
+        .event-detail {
+            margin-top: 30px;
+        }
+        .event-detail h4 {
+            color: #5b6e84;
+        }
+        .event-detail p {
+            font-size: 14px;
+        }
+        /* Animation pour faire apparaître le calendrier */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -103,14 +117,21 @@ foreach ($events as $event) {
     </div>
 
     <!-- Conteneur pour les cartes des événements -->
-    <div class="card-container">
+    <div class="card-container" id="cardContainer">
         <?php foreach ($events as $event): ?>
-            <div class="event-card">
+            <div class="event-card" onclick="showEventDetails(<?= $event['id'] ?>)">
                 <h5><?= htmlspecialchars($event['name']) ?></h5>
-                <p><?= htmlspecialchars($event['description']) ?></p>
                 <p class="event-date"><?= date('F d, Y', strtotime($event['date'])) ?></p>
             </div>
         <?php endforeach; ?>
+    </div>
+
+    <!-- Détails de l'événement -->
+    <div class="event-detail" id="eventDetail" style="display:none;">
+        <h4>Événement Détails</h4>
+        <div id="eventInfo">
+            <!-- Détails seront ajoutés ici via JS -->
+        </div>
     </div>
 </div>
 
@@ -131,6 +152,25 @@ foreach ($events as $event) {
             calendarEvents: <?= json_encode($eventsJson) ?>, // Ajouter les événements
         });
     });
+
+    // Affichage des détails d'un événement
+    function showEventDetails(eventId) {
+        // Recherche de l'événement dans les données PHP
+        var events = <?= json_encode($events) ?>;
+        var event = events.find(event => event.id == eventId);
+
+        if (event) {
+            // Afficher les détails
+            var detailsHTML = `
+                <h5>${event.name}</h5>
+                <p><strong>Date:</strong> ${event.date}</p>
+                <p><strong>Lieu:</strong> ${event.location}</p>
+                <p><strong>Description:</strong> ${event.description}</p>
+            `;
+            document.getElementById('eventInfo').innerHTML = detailsHTML;
+            document.getElementById('eventDetail').style.display = 'block';
+        }
+    }
 </script>
 
 </body>
