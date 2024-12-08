@@ -79,6 +79,13 @@ foreach ($events as $event) {
         .calendar-controls button:hover {
             background-color: #0056b3;
         }
+        .event-details {
+            background: #f0f2f5;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -89,7 +96,12 @@ foreach ($events as $event) {
     </div>
     <div id="calendar"></div>
 
-    <!-- Supprimer la section de boutons de navigation -->
+    <div class="event-details" id="eventDetails" style="display: none;">
+        <h3 id="eventTitle">Event Details</h3>
+        <p id="eventDescription"></p>
+        <p><strong>Date:</strong> <span id="eventDate"></span></p>
+        <p><strong>Location:</strong> <span id="eventLocation"></span></p>
+    </div>
 </div>
 
 <!-- Jquery et Evo Calendar JS -->
@@ -106,9 +118,15 @@ foreach ($events as $event) {
             eventDisplayDefault: true,
             eventListToggler: true,
             calendarEvents: <?= json_encode($eventsJson) ?>, // Ajouter les événements
+            eventClick: function(event) {
+                // Afficher les détails de l'événement
+                $('#eventDetails').show();
+                $('#eventTitle').text(event.name);
+                $('#eventDescription').text(event.description);
+                $('#eventDate').text(event.date);
+                $('#eventLocation').text(event.location);
+            }
         });
-
-        // La gestion des événements de navigation a été supprimée
     });
 </script>
 </body>
