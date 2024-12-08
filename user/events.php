@@ -168,7 +168,7 @@ foreach ($events as $event) {
         // Initialisation du calendrier
         $("#calendar").evoCalendar({
             language: 'en',
-            theme: "midnight-blue", // Design moderne
+            theme: "", // Design moderne
             todayHighlight: true,
             sidebarDisplayDefault: true,
             sidebarToggler: true,
