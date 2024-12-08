@@ -2,7 +2,7 @@
 include '../config/db.php';
 
 // Récupérer les événements
-$stmt = $pdo->prepare("SELECT id, name, date, location, description FROM events ORDER BY date ASC");
+$stmt = $pdo->prepare("SELECT id, name, date, location FROM events ORDER BY date ASC");
 $stmt->execute();
 $events = $stmt->fetchAll();
 
@@ -13,20 +13,19 @@ foreach ($events as $event) {
         'id' => $event['id'],
         'name' => $event['name'],
         'date' => date('F/d/Y', strtotime($event['date'])),
-        'description' => $event['description'],
-        'location' => $event['location'],
-        'color' => '#007bff', // Couleur personnalisée
+        'description' => $event['location'],
+        'color' => '#007bff', // Utilisation de couleurs personnalisées
         'category' => 'event',
     ];
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Calendar</title>
+    <title>Vue Calendrier et Cartes</title>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
     <style>
@@ -41,7 +40,7 @@ foreach ($events as $event) {
             margin: auto;
             padding: 30px 15px;
         }
-        .calendar-header {
+        .calendar-header, .card-header {
             text-align: center;
             margin-bottom: 20px;
             font-size: 24px;
@@ -54,74 +53,73 @@ foreach ($events as $event) {
             overflow: hidden;
             animation: fadeIn 0.5s ease-in-out;
         }
-        .evo-calendar {
-            border: none;
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 30px;
         }
-        /* Animation pour faire apparaître le calendrier */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .calendar-controls {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .calendar-controls button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            margin: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .calendar-controls button:hover {
-            background-color: #0056b3;
-        }
-        .event-details {
-            background: #f0f2f5;
+        .event-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            margin: 15px;
             padding: 20px;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
         }
-        .event-details h3 {
-            font-size: 22px;
-            margin-bottom: 15px;
-            color: #5b6e84;
+        .event-card:hover {
+            transform: translateY(-10px);
         }
-        .event-details p {
-            margin: 8px 0;
-            font-size: 16px;
-            line-height: 1.6;
+        .event-card h5 {
+            margin: 0;
+            font-size: 18px;
             color: #333;
         }
-        .event-details strong {
-            color: #007bff;
+        .event-card p {
+            font-size: 14px;
+            color: #666;
+        }
+        .event-card .event-date {
+            font-size: 12px;
+            color: #888;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- Titre de la section Calendrier -->
     <div class="calendar-header">
-        <h1><i class="fas fa-calendar-alt"></i> Calendar View</h1>
+        <h1><i class="fas fa-calendar-alt"></i> Vue Calendrier</h1>
     </div>
+
+    <!-- Calendrier -->
     <div id="calendar"></div>
 
-    <div class="event-details" id="eventDetails" style="display: none;">
-        <h3 id="eventTitle">Event Details</h3>
-        <p id="eventDescription"></p>
-        <p><strong>Date:</strong> <span id="eventDate"></span></p>
-        <p><strong>Location:</strong> <span id="eventLocation"></span></p>
+    <!-- Titre de la section Cartes -->
+    <div class="card-header">
+        <h1><i class="fas fa-list"></i> Événements sous forme de cartes</h1>
+    </div>
+
+    <!-- Conteneur pour les cartes des événements -->
+    <div class="card-container">
+        <?php foreach ($events as $event): ?>
+            <div class="event-card">
+                <h5><?= htmlspecialchars($event['name']) ?></h5>
+                <p><?= htmlspecialchars($event['description']) ?></p>
+                <p class="event-date"><?= date('F d, Y', strtotime($event['date'])) ?></p>
+            </div>
+        <?php endforeach; ?>
     </div>
 </div>
 
+<!-- Jquery et Evo Calendar JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
 <script>
     $(document).ready(function () {
+        // Initialiser le calendrier Evo
         $("#calendar").evoCalendar({
             language: 'en',
             theme: "", // Design personnalisé
@@ -130,17 +128,10 @@ foreach ($events as $event) {
             sidebarToggler: true,
             eventDisplayDefault: true,
             eventListToggler: true,
-            calendarEvents: <?= json_encode($eventsJson) ?>,
-            eventClick: function(event) {
-                // Afficher les détails de l'événement
-                $('#eventDetails').show();
-                $('#eventTitle').text(event.name);
-                $('#eventDescription').text(event.description); // Affichage de la description
-                $('#eventDate').text(event.date);
-                $('#eventLocation').text(event.location); // Affichage du lieu
-            }
+            calendarEvents: <?= json_encode($eventsJson) ?>, // Ajouter les événements
         });
     });
 </script>
+
 </body>
 </html>
