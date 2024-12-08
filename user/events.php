@@ -101,7 +101,7 @@ foreach ($events as $event) {
         <h3 id="eventTitle">Event Details</h3>
         <p id="eventDescription"></p> <!-- Description de l'événement -->
         <p><strong>Date:</strong> <span id="eventDate"></span></p>
-        <p><strong>Location:</strong> <span id="eventLocation"></span></p>
+        <p><strong>Location:</strong> <span id="eventLocation"></span></p> <!-- Affichage du lieu -->
     </div>
 </div>
 
@@ -125,7 +125,7 @@ foreach ($events as $event) {
                 $('#eventTitle').text(event.name);
                 $('#eventDescription').text(event.description); // Affichage de la description
                 $('#eventDate').text(event.date);
-                $('#eventLocation').text(event.location);
+                $('#eventLocation').text(event.location); // Affichage du lieu
             }
         });
     });
