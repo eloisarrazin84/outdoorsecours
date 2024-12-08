@@ -1,20 +1,21 @@
 <?php
 include '../config/db.php';
 
-// Récupérer les événements
+// Récupérer les événements depuis la base de données
 $stmt = $pdo->prepare("SELECT id, name, date, location, description FROM events ORDER BY date ASC");
 $stmt->execute();
 $events = $stmt->fetchAll();
 
-// Convertir les événements en format JSON pour Evo Calendar
+// Convertir les événements en format JSON pour Evo Calendar et Vue Cartes
 $eventsJson = [];
 foreach ($events as $event) {
     $eventsJson[] = [
         'id' => $event['id'],
         'name' => $event['name'],
-        'date' => date('F/d/Y', strtotime($event['date'])),
-        'description' => $event['location'],
-        'color' => '#007bff', // Utilisation de couleurs personnalisées
+        'date' => date('F/d/Y', strtotime($event['date'])), // Format pour Evo Calendar
+        'description' => $event['description'],
+        'location' => $event['location'],
+        'color' => '#007bff', // Couleur personnalisée
         'category' => 'event',
     ];
 }
@@ -26,7 +27,6 @@ foreach ($events as $event) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendrier d'Événements</title>
-    <!-- Style de base -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
     <style>
@@ -71,7 +71,6 @@ foreach ($events as $event) {
             background-color: #285d8f;
         }
 
-        /* Vue Calendrier */
         #calendar {
             border-radius: 10px;
             background-color: white;
@@ -147,18 +146,15 @@ foreach ($events as $event) {
     <!-- Événements sous forme de cartes -->
     <div class="event-cards-container" id="eventsCardsView" style="display: none;">
         <!-- Cartes des événements -->
+        <!-- Dynamique avec PHP -->
+        <?php foreach ($events as $event): ?>
         <div class="event-card">
-            <div class="event-title">Ultra</div>
-            <div class="event-date">December 29, 2024</div>
-            <div class="event-description">Test description for event</div>
-            <div class="event-location">Location: Biviers</div>
+            <div class="event-title"><?= htmlspecialchars($event['name']) ?></div>
+            <div class="event-date"><?= htmlspecialchars($event['date']) ?></div>
+            <div class="event-description"><?= htmlspecialchars($event['description']) ?></div>
+            <div class="event-location"><?= htmlspecialchars($event['location']) ?></div>
         </div>
-        <div class="event-card">
-            <div class="event-title">Marathon</div>
-            <div class="event-date">January 15, 2025</div>
-            <div class="event-description">Another event description</div>
-            <div class="event-location">Location: Paris</div>
-        </div>
+        <?php endforeach; ?>
     </div>
 
 </div>
@@ -178,26 +174,7 @@ foreach ($events as $event) {
             sidebarToggler: true,
             eventDisplayDefault: true,
             eventListToggler: true,
-            calendarEvents: [
-                {
-                    id: 'event1',
-                    name: 'Ultra',
-                    date: 'December/29/2024',
-                    type: 'event',
-                    description: 'Test description for event',
-                    location: 'Biviers',
-                    color: '#007bff'
-                },
-                {
-                    id: 'event2',
-                    name: 'Marathon',
-                    date: 'January/15/2025',
-                    type: 'event',
-                    description: 'Another event description',
-                    location: 'Paris',
-                    color: '#ff5733'
-                }
-            ],
+            calendarEvents: <?= json_encode($eventsJson) ?>, // Charger les événements depuis la base de données
         });
 
         // Changer de vue (Calendrier ou Cartes)
