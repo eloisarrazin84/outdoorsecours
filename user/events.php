@@ -6,17 +6,16 @@ $stmt = $pdo->prepare("SELECT id, name, date, location, description FROM events 
 $stmt->execute();
 $events = $stmt->fetchAll();
 
-// Convertir les événements en format JSON pour Evo Calendar et Vue Cartes
+// Convertir les événements en format JSON pour FullCalendar
 $eventsJson = [];
 foreach ($events as $event) {
     $eventsJson[] = [
         'id' => $event['id'],
-        'name' => $event['name'],
-        'date' => date('F/d/Y', strtotime($event['date'])), // Format pour Evo Calendar
+        'title' => $event['name'],
+        'start' => date('Y-m-d', strtotime($event['date'])), // Format pour FullCalendar
         'description' => $event['description'],
         'location' => $event['location'],
         'color' => '#007bff', // Couleur personnalisée
-        'category' => 'event',
     ];
 }
 ?>
@@ -27,9 +26,15 @@ foreach ($events as $event) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prochains Événements</title>
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid/main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/list/main.css" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/css/evo-calendar.midnight-blue.css">
+    
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -78,13 +83,6 @@ foreach ($events as $event) {
         }
         .calendar-controls button.active {
             background-color: #0056b3;
-        }
-        #calendar {
-            border-radius: 12px;
-            background-color: #fff;
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            animation: fadeIn 0.5s ease-in-out;
         }
         .event-card {
             border: 1px solid #ddd;
@@ -170,22 +168,42 @@ foreach ($events as $event) {
         </div>
     </div>
 
-    <!-- Jquery et Evo Calendar JS -->
+    <!-- Jquery, FullCalendar JS and Dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/evo-calendar@1.1.2/evo-calendar/js/evo-calendar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/list/main.js"></script>
     <script>
         $(document).ready(function () {
-            // Initialiser le calendrier
-            $("#calendar").evoCalendar({
-                language: 'en',
-                theme: "",
-                todayHighlight: true,
-                sidebarDisplayDefault: true,
-                sidebarToggler: true,
-                eventDisplayDefault: true,
-                eventListToggler: true,
-                calendarEvents: <?= json_encode($eventsJson) ?>, // Événements dynamiques
+            // Initialiser le calendrier FullCalendar
+            var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'dayGridMonth', // Vue par défaut du calendrier
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: <?= json_encode($eventsJson) ?>, // Charger les événements dynamiquement
+                eventClick: function(info) {
+                    // Afficher les détails de l'événement au clic
+                    $('#cardView').show();
+                    $('#calendarView').hide();
+                    var eventData = info.event.extendedProps;
+                    var cardContent = `
+                        <div class="event-card">
+                            <div class="event-title">${info.event.title}</div>
+                            <div class="event-details">
+                                <strong>Date:</strong> ${info.event.start.toLocaleDateString()} <br>
+                                <strong>Description:</strong> ${eventData.description} <br>
+                                <strong>Lieu:</strong> ${eventData.location}
+                            </div>
+                        </div>
+                    `;
+                    $('#cardView').html(cardContent);
+                }
             });
+            calendar.render();
 
             // Basculer entre les vues
             $('#calendarViewBtn').on('click', function () {
