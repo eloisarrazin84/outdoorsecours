@@ -60,6 +60,7 @@ foreach ($events as $event) {
             font-size: 30px;
             font-weight: bold;
             color: #5b6e84;
+            margin-top: 10px;
         }
         .calendar-controls {
             text-align: center;
@@ -81,6 +82,13 @@ foreach ($events as $event) {
         }
         .calendar-controls button.active {
             background-color: #0056b3;
+        }
+        #calendar {
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in-out;
         }
         .event-card {
             border: 1px solid #ddd;
@@ -113,6 +121,10 @@ foreach ($events as $event) {
             color: #5b6e84;
             margin-top: 30px;
             text-align: center;
+        }
+        .fc-toolbar {
+            text-align: center;
+            margin-bottom: 20px;
         }
         @media (max-width: 768px) {
             .calendar-header {
