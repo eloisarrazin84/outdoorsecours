@@ -2,7 +2,7 @@
 include '../config/db.php';
 
 // Récupérer les événements
-$stmt = $pdo->prepare("SELECT id, name, date, location FROM events ORDER BY date ASC");
+$stmt = $pdo->prepare("SELECT id, name, date, location, description FROM events ORDER BY date ASC");
 $stmt->execute();
 $events = $stmt->fetchAll();
 
@@ -13,7 +13,8 @@ foreach ($events as $event) {
         'id' => $event['id'],
         'name' => $event['name'],
         'date' => date('F/d/Y', strtotime($event['date'])),
-        'description' => $event['location'],
+        'description' => $event['description'], // Inclure la description ici
+        'location' => $event['location'], // Lieu de l'événement
         'color' => '#007bff', // Utilisation de couleurs personnalisées
         'category' => 'event',
     ];
@@ -98,7 +99,7 @@ foreach ($events as $event) {
 
     <div class="event-details" id="eventDetails" style="display: none;">
         <h3 id="eventTitle">Event Details</h3>
-        <p id="eventDescription"></p>
+        <p id="eventDescription"></p> <!-- Description de l'événement -->
         <p><strong>Date:</strong> <span id="eventDate"></span></p>
         <p><strong>Location:</strong> <span id="eventLocation"></span></p>
     </div>
@@ -122,7 +123,7 @@ foreach ($events as $event) {
                 // Afficher les détails de l'événement
                 $('#eventDetails').show();
                 $('#eventTitle').text(event.name);
-                $('#eventDescription').text(event.description);
+                $('#eventDescription').text(event.description); // Affichage de la description
                 $('#eventDate').text(event.date);
                 $('#eventLocation').text(event.location);
             }
