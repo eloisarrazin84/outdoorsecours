@@ -52,20 +52,11 @@
         <h1 class="mt-3">Prochains Événements</h1>
     </div>
 
-    <!-- Contrôles pour basculer entre les vues -->
-    <div class="calendar-controls">
-        <button id="calendarViewBtn" class="btn btn-primary active">Vue Calendrier</button>
-        <button id="cardViewBtn" class="btn btn-secondary">Vue Cartes</button>
-    </div>
-
-    <!-- Vue Calendrier -->
-    <div id="calendarView" style="display: block;">
-        <div id="calendar"></div>
-    </div>
-
     <!-- Vue Cartes -->
-    <div id="cardView" style="display: none;">
+    <div id="cardView">
         <div id="eventCardContainer"></div>
+        <!-- Ajouter un nouvel événement -->
+        <button class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#eventModal">Ajouter un événement</button>
     </div>
 
     <!-- Modal pour ajouter/modifier un événement -->
@@ -121,39 +112,6 @@
             }
         ];
 
-        // Initialisation de FullCalendar
-        const calendarEl = document.getElementById('calendar');
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: ['dayGrid', 'interaction'],
-            initialView: 'dayGridMonth',
-            events: eventsData,
-            eventClick: function(info) {
-                // Ouvrir le modal avec les détails de l'événement
-                $('#eventModal').modal('show');
-                $('#eventTitle').val(info.event.title);
-                $('#eventDescription').val(info.event.extendedProps.description);
-                $('#eventLocation').val(info.event.extendedProps.location);
-                $('#eventDate').val(info.event.startStr);
-            }
-        });
-        calendar.render();
-
-        // Basculement entre les vues Calendrier et Cartes
-        $('#calendarViewBtn').on('click', function () {
-            $('#calendarView').show();
-            $('#cardView').hide();
-            $(this).addClass('active');
-            $('#cardViewBtn').removeClass('active');
-        });
-
-        $('#cardViewBtn').on('click', function () {
-            $('#cardView').show();
-            $('#calendarView').hide();
-            $(this).addClass('active');
-            $('#calendarViewBtn').removeClass('active');
-            renderCardView(); // Fonction pour afficher les événements sous forme de carte
-        });
-
         // Afficher les événements sous forme de carte
         function renderCardView() {
             $('#eventCardContainer').empty(); // Vide l'ancienne vue
@@ -171,6 +129,8 @@
             });
         }
 
+        renderCardView();  // Initialisation de la vue des cartes
+
         // Sauvegarder l'événement depuis le modal
         $('#saveEventBtn').click(function() {
             const eventData = {
@@ -180,16 +140,12 @@
                 start: $('#eventDate').val()
             };
 
-            $.ajax({
-                url: 'save_event.php',  // Script PHP pour enregistrer dans la base de données
-                type: 'POST',
-                data: eventData,
-                success: function(response) {
-                    // Réactualiser le calendrier avec le nouvel événement
-                    calendar.refetchEvents();
-                    $('#eventModal').modal('hide');
-                }
-            });
+            // Ajouter l'événement dans le tableau local pour l'exemple
+            eventsData.push(eventData);
+
+            // Réactualiser la vue des cartes
+            renderCardView();
+            $('#eventModal').modal('hide');  // Fermer le modal
         });
     });
 </script>
