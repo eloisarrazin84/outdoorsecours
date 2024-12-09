@@ -30,16 +30,22 @@
         #calendar {
             margin-top: 20px;
         }
-        .modal-header, .modal-footer {
-            background-color: #007bff;
-            color: white;
-        }
         .event-card {
             margin-bottom: 15px;
         }
         .fc .fc-toolbar-title {
             font-weight: bold;
             color: #5b6e84;
+        }
+        .modal-header, .modal-footer {
+            background-color: #007bff;
+            color: white;
+        }
+        .event-header {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -55,41 +61,6 @@
     <!-- Vue Cartes -->
     <div id="cardView">
         <div id="eventCardContainer"></div>
-        <!-- Ajouter un nouvel événement -->
-        <button class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#eventModal">Ajouter un événement</button>
-    </div>
-
-    <!-- Modal pour ajouter/modifier un événement -->
-    <div id="eventModal" class="modal fade" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="eventModalLabel">Ajouter / Modifier un événement</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="eventForm">
-                        <div class="mb-3">
-                            <label for="eventTitle" class="form-label">Titre</label>
-                            <input type="text" class="form-control" id="eventTitle">
-                        </div>
-                        <div class="mb-3">
-                            <label for="eventDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="eventDescription"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="eventLocation" class="form-label">Lieu</label>
-                            <input type="text" class="form-control" id="eventLocation">
-                        </div>
-                        <div class="mb-3">
-                            <label for="eventDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="eventDate">
-                        </div>
-                        <button type="button" id="saveEventBtn" class="btn btn-primary">Enregistrer</button>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 
 </div>
@@ -117,12 +88,14 @@
             $('#eventCardContainer').empty(); // Vide l'ancienne vue
             eventsData.forEach(event => {
                 $('#eventCardContainer').append(`
-                    <div class="event-card">
-                        <div class="event-title">${event.title}</div>
-                        <div class="event-details">
-                            <strong>Date:</strong> ${event.start} <br>
-                            <strong>Description:</strong> ${event.description} <br>
-                            <strong>Lieu:</strong> ${event.location}
+                    <div class="card mb-3">
+                        <div class="card-header" style="background-color: #007bff; color: white;">
+                            <h5 class="card-title">${event.title}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Date:</strong> ${event.start}</p>
+                            <p><strong>Description:</strong> ${event.description}</p>
+                            <p><strong>Lieu:</strong> ${event.location}</p>
                         </div>
                     </div>
                 `);
@@ -130,23 +103,6 @@
         }
 
         renderCardView();  // Initialisation de la vue des cartes
-
-        // Sauvegarder l'événement depuis le modal
-        $('#saveEventBtn').click(function() {
-            const eventData = {
-                title: $('#eventTitle').val(),
-                description: $('#eventDescription').val(),
-                location: $('#eventLocation').val(),
-                start: $('#eventDate').val()
-            };
-
-            // Ajouter l'événement dans le tableau local pour l'exemple
-            eventsData.push(eventData);
-
-            // Réactualiser la vue des cartes
-            renderCardView();
-            $('#eventModal').modal('hide');  // Fermer le modal
-        });
     });
 </script>
 
